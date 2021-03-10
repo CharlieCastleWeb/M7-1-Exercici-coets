@@ -1,70 +1,73 @@
 
 let rockets:Rocket[] = [];
+let divShowRockets = document.getElementsByClassName("showRocket")[0] as HTMLDivElement;
+let acceleration:number = 10;
 
-function createRocket1() {
-    let rocket1: Rocket = new Rocket("32WESSDS",[10,30,80]);
-    console.log(rocket1);
-    rockets.push(rocket1);
+function printRocket(rocket:Rocket){
+    let showRocket = document.createElement("p");
+    showRocket.innerHTML = rocket.printRocket();
+    divShowRockets.appendChild(showRocket);
+    
 }
 
-function createRocket2() {
-    let rocket2: Rocket = new Rocket("LDSFJA32",[30,40,50,50,30,10]);
-    console.log(rocket2);
-    rockets.push(rocket2);
-}
+//////////////////////////////// CREAR FUNCTION PARA CREACION DE BOTONES GENERICOS //////////////////////
 
-function printRocket(rocket:Rocket, rocketNumber:number){
-    let divShowRockets = document.getElementsByClassName("showRocket")[rocketNumber] as HTMLDivElement;
-    let showRockets:string = `
-        <p>Rocket ${rocket.code} boosters max power ${rocket.engines}</p>
-    `;
-    divShowRockets.innerHTML = showRockets;
+function createRocket(code:string, engines:number[]) {
+    let rocket:Rocket = new Rocket(code, engines);
+    console.log(rocket);
+    rockets.push(rocket);
+    
+    let accelerateRocketsDiv = document.getElementsByClassName("accelerateRockets")[0];
+    let printRocketsDiv = document.getElementsByClassName("printRockets")[0];
+    
+    let accelerateDiv = document.createElement("div");
+    let accelerateButton = document.createElement("button");
+    accelerateButton.className = "accelerateRocket"+code;
+    accelerateButton.innerHTML = "Accelerate Rocket "+code;
+    accelerateButton.addEventListener("click", function(){
+        rockets[0].accelerate(acceleration);
+    });
+    accelerateDiv.appendChild(accelerateButton);
+
+    let brakeButton = document.createElement("button");
+    brakeButton.className = "brakeRocket"+code;
+    brakeButton.innerHTML = "Brake Rocket "+code;
+    brakeButton.addEventListener("click", function(){
+        rockets[0].accelerate(-acceleration);
+    });
+    accelerateDiv.appendChild(brakeButton);
+    accelerateRocketsDiv.appendChild(accelerateDiv);
+
+    let printButton = document.createElement("button");
+    printButton.className = "printRocket"+code;
+    printButton.innerHTML = "Print Rocket "+code+" info";
+    printButton.addEventListener("click", function(){
+        divShowRockets.innerHTML = "";
+        printRocket(rockets[0]);
+    });
+    printRocketsDiv.appendChild(printButton);
+
 }
 
 let createRocket1Input = document.getElementById("createRocket1");
 createRocket1Input?.addEventListener("click", function(){
-    createRocket1();
+    createRocket("32WESSDS",[10,30,80]);
+    createRocket1Input.disabled = true;
 });
+
 
 let createRocket2Input = document.getElementById("createRocket2");
 createRocket2Input?.addEventListener("click", function(){
-    createRocket2();
-});
-
-let accelerateRocket1Input = document.getElementById("accelerateRocket1");
-accelerateRocket1Input?.addEventListener("click", function(){
-    rockets[0].accelerate();
-});
-
-let accelerateRocket2Input = document.getElementById("accelerateRocket2");
-accelerateRocket2Input?.addEventListener("click", function(){
-    rockets[1].accelerate();
-});
-
-let brakeRocket1Input = document.getElementById("brakeRocket1");
-brakeRocket1Input?.addEventListener("click", function(){
-    rockets[0].brake();
-});
-
-let brakeRocket2Input = document.getElementById("brakeRocket2");
-brakeRocket2Input?.addEventListener("click", function(){
-    rockets[1].brake();
-});
-
-let printRocket1Input = document.getElementById("printRocket1");
-printRocket1Input?.addEventListener("click", function(){
-    printRocket(rockets[0], 0);
-});
-
-let printRocket2Input = document.getElementById("printRocket2");
-printRocket2Input?.addEventListener("click", function(){
-    printRocket(rockets[1], 1);
+    createRocket("LDSFJA32",[30,40,50,50,30,10]);
+    createRocket2Input.disabled = true;
 });
 
 let printAllRocketsInput = document.getElementById("printAll");
 printAllRocketsInput?.addEventListener("click", function(){
-    printRocket(rockets[0], 0);
-    printRocket(rockets[1], 1);
+    divShowRockets.innerHTML = "";
+    
+    rockets.forEach(element => printRocket(element));
+    
 });
 
 
